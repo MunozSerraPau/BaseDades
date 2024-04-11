@@ -1,6 +1,11 @@
-# ACTIVITAT - EXERCICIS SUBPROGRAMES
+# EXERCICIS SubProgramesFitxer
 
-**Exercici 1**
+## ACTIVITAT - EXERCICIS SUBPROGRAMES
+
+### **Exercici 1 - SubProgrames**
+
+Exercici 1 - Fes una funció anomenada spData, tal que donada una data en format
+MySQL ( AAAA-MM-DD ) ens retorni una cadena de caràcters en format DD-MM-AAAA
 
 ```mysql
 DELIMITER //
@@ -17,9 +22,10 @@ DELIMITER ;
 SELECT rrhh.sp_Data('1988-12-01');
 ```
 
-**Exercici 2** /*Hola*/
+### **Exercici 2 - SubProgrames**
 
-Aqui ficare l
+Exercici 2 - Fes una funció anomenada spPotencia, tal que donada una base i un
+exponent, ens calculi la seva potència. Intenta no utilitzar la funció POW.
 
 ```mysql
 DELIMITER //
@@ -45,7 +51,10 @@ SELECT rrhh.sp_Potencia(2, NULL);
 
 ```
 
-**Exercici 3**
+### **Exercici 3 - SubProgrames**
+
+Exercici 3 - Fes una funció anomenada spIncrement que donat un codi d’empleat i un
+% de increment, ens calculi el salari sumant aquest percentatge.
 
 ```mysql
 DELIMITER //
@@ -69,7 +78,10 @@ SELECT rrhh.sp_Increment(212, 20);
 
 ```
 
-**Exercici 4**
+### **Exercici 4 - SubProgrames**
+
+Exercici 4 - Fes una funció anomenada spPringat, tal que li passem un codi de
+departament, i ens torni el codi d’empleat que guanya menys d’aquell departament.
 
 ```mysql
 DELIMITER //
@@ -91,7 +103,10 @@ DELIMITER ;
 SELECT rrhh.sp_Pringat(60);
 ```
 
-**Exercici 5**
+### **Exercici 5 - SubProgrames**
+
+Exercici 5 - Utilitzant la funció spPringat fes una consulta per obtenir de cada
+departament, l’empleat pringat. Mostra el codi i nom del departament, i el codi d’empleat.
 
 ```mysql
 SELECT empleat_id, departament_id
@@ -99,7 +114,16 @@ SELECT empleat_id, departament_id
 WHERE rrhh.sp_Pringat();
 ```
 
-**Exercici 6**
+### **Exercici 6 - SubProgrames**
+
+Exercici 6 - Fes una funció anomenada spCategoria, tal que donat un codi d’empleat,
+ens digui en quina categoria professional està. El criteri que volem seguir per determinar
+la categoria professional és en funció dels anys que porta treballant a l’empresa:
+
+- Entre 0 i 1 anys -> Auxiliar
+- Entre 2 i 10 anys -> Oficial de Segona
+- Entre 11 i 20 Anys -> Oficial de Primera
+- Més de 20 anys -> Que es jubili!
 
 ```mysql
 DROP FUNCTION IF EXISTS sp_Categoria //
@@ -121,35 +145,49 @@ END //
 DELIMITER ;
 ```
 
-**Exercici 7**
+### **Exercici 7 - SubProgrames**
+
+Exercici 7 - Fes una consulta utilitzant la funció anterior perquè mostri mostri de cada
+empleat, el codi d’empleat, el nom, els anys treballats i la categoria professional a la que
+pertany.
 
 ```mysql
 
 ```
 
-**Exercici 8**
+### **Exercici 8 - SubProgrames**
+
+Exercici 8 - Fes una funció anomenada spEdat, tal que donada una data per paràmetre
+ens retorni l'edat d'una persona. Les dates posteriors a la data d'avui han de retornar 0.
 
 ```mysql
 
 ```
 
-**Exercici 9**
+### **Exercici 9 - SubProgrames**
+
+Exercici 9 - Fes una funció que ens retorni el número de directors (caps) diferents tenim.
 
 ```mysql
 
 ```
 
-**Exercici 10**
+### **Exercici 10 - SubProgrames**
+
+Exercici 10 - Quina instrucció utilitzarem si volem veure el contingut de la funció
+spPringat?
 
 ```mysql
 
 ```
 
+## ACTIVITAT - ENUNCIATS DE PROCEDIMENTS
 
-# ACTIVITAT - ENUNCIATS DE PROCEDIMENTS
+### **Funcio que farem servir per mes d'un exercici**
 
-*** Funcio que farem servir per mes d'un exercici ***
-```
+A continuació un codi per comprovar si el ID que ens passen per parametre existeix en la nostra BD de empleat.
+
+```mysql
 /* Comprovem si el ID que li passem existeix*/
 DELIMITER //
 CREATE FUNCTION spEmpleatExists (pEmpleatId) RETURNS BOOLEAN
@@ -166,31 +204,20 @@ BEGIN
     RETURN vRetorn
 END //
 ```
-**Exercici 1**
+
+### **Exercici 1 - Procediments**
+
+Fes un procediment que permeti obtenir la data i hora del sistema i l’usuari actual.
+
+```mysql
 
 ```
 
-```
+### **Exercici 2 - Procediments**
 
-**Exercici 2**
+Fes un procediment que intercanvii el sou de dos empleats passats per paràmetre.
 
-```
-/* Comprovem si el ID que li passem existeix*/
-DELIMITER //
-CREATE FUNCTION spEmpleatExists (pEmpleatId) RETURNS BOOLEAN
-NOT DETERMINISTIC READS 
-BEGIN 
-    DECLARE vRetorn BOOLEAN DEFAULT FALSE;
-    
-    IF (SELECT empleat_id
-                FROM empleats
-            WHERE empleat_id = pEmpleatId) THEN
-        SET vRetorn = 1;
-    END IF;
-
-    RETURN vRetorn
-END //
-
+```mysql
 /* Fem el canvi de salari als dos empleats */
 DELIMITER //
 CREATE PROCEDURE spSwapSous (IN pEmpleatId1 INT, IN pEmpleatId2 INT)
@@ -220,9 +247,11 @@ BEGIN
 SELECT spSwapSous(7, 8);
 ```
 
-**Exercici 3**
+### **Exercici 3 - Procediments**
 
-```
+Fes un procediment que donat dos Ids d'empleat assigni el codi de departament del primer en el segon.
+
+```mysql
 DROP PROCEDURE IF EXISTS spAssignarDepart
 DELIMITER //
 CREATE PROCEDURE spAssignarDepart (IN pEmpleatId1 INT, IN pEmpleatId2 INT)
@@ -244,9 +273,11 @@ END //
 SELECT spAssignarDepart(7, 8);
 ```
 
-**Exercici 4**
+### **Exercici 4 - Procediments**
 
-```
+Fes un procediment que donat dos Ids d'empleat assigni el codi de departament del primer en el segon.
+
+```mysql
 DROP PROCEDURE IF EXISTS spMoureEmpleats
 DELIMITER //
 CREATE PROCEDURE spMoureEmpleats (IN pDepId1 INT, IN pDepId2 INT)
@@ -262,22 +293,205 @@ END //
 SELECT spMoureEmpleats(60, 90);
 ```
 
-**Exercici 5**
+### **Exercici 5 - Procediments**
 
-**Exercici 6**
+Fes un procediment per mostrar un llistat dels empleats. Volem veure el id_empleat, nom_empleat, nom_departament i el nom de la localització del departament
 
-**Exercici 7**
+```mysql
+    
+```
 
-**Exercici 8**
+### **Exercici 6 - Procediments**
 
-**Exercici 9**
+Fes un procediment que donat un codi d’empleat, ens doni la informació de l’empleat ( agafa la informació que creguis rellevant)
 
-**Exercici 10**
+```mysql
 
-**Exercici 11**
+```
 
-**Exercici 12**
+### **Exercici 7 - Procediments**
 
-**Exercici 13**
+Volem fer un registre dels usuaris que entren al nostre sistema. Per fer-ho primer caldrà crear una taula amb dos camps, un per guardar l’usuari i l’altre per guardar la data i hora de l’accés.
 
-**Exercici 14**
+```mysql
+
+```
+
+### **Exercici 8 - Procediments**
+
+A continuació feu un procediment sense arguments, de manera que cada vegada que el crideu, insereixi en aquesta taula l’usuari actual i la data i hora en que s’ha executat el procediment.
+
+```mysql
+
+```
+
+### **Exercici 9 - Procediments**
+
+Fes un procediment que ens permeti afegir un nou departament però amb la següent particularitat: En cas que la localització no existeixi a la taula localitzacions, ens posarà un NULL en el camp id_localtizacio de la taula departaments. Al procediment li hem de passar el codi de departament, el nom del departament i el codi de la localització.
+
+```mysql
+
+```
+
+### **Exercici 10 - Procediments**
+
+Fes un procediment que donat un codi d’empleat, ens posi en paràmetres de sortida el nom i el cognom. Indica com ho pots fer per comprovar si el procediment et funciona.
+
+```mysql
+
+```
+
+### **Exercici 11 - Procediments**
+
+Fes un procediment que ens permeti modificar el nom i cognom d’un empleat.
+
+```mysql
+
+```
+
+### **Exercici 12 - Procediments**
+
+Crea una taula d’auditoria anomenada logs_usuaris. Aquesta taula la utilitzarem per monitoritzar algunes de les accions que fan els usuaris sobre les dades,per exemple si actualitzen dades, eliminen registres.
+La taula ha de tenir els següents camps:
+
+| Nom | Tipus | Descripció |
+| --- | --- | --- |
+| usuari | VARCHAR(100)  | Usuari que ha realitzat l’acció |
+| data   | DATETIME      | Data-Hora en que s’ha realitzat l’acció |
+| taula  | VARCHAR(50)   | Taula sobre la que es realitza l’acció |
+| accio  | VARCHAR(20)   | “ELIMINAR”,”AFEGIR”,”MODIFICAR”,”INSERIR” |
+| valor_pk | VARCHAR(200) | valor que identifica el registre que ha patit l’acció |
+
+Fes un procediment amb nom spRegistrarLog que rebrà com a paràmetres el nom de la taula, l’acció i el valor_pk.
+Aquest procediment només cal que insereixi un registre en la taula logs_usuaris amb les dades rebudes, tenint en compte l’usuari actual i la data-hora del sistema.
+
+```mysql
+
+```
+
+### **Exercici 13 - Procediments**
+Fes un procediment que ens permeti eliminar un departament determinat. El departament s’ha d’eliminar de la taula departaments. Utilitza a més dins d’aquest procediment, el procediment creat anteriorment (spRegistrarLog) per guardar també un registre del que ha realitzat l’usuari. Ens ha de quedar clar que l’usuari actual, en data X ha eliminat de la taula DEPARTAMENTS el codi departament Y.
+
+```mysql
+
+```
+
+### **Exercici 14 - Procediments**
+
+Fes un procediment que ens posi en paràmetres de sortida el número d’empleats que tenim, el número de departaments i el número de localitzacions.
+
+```mysql
+
+```
+
+prova2
+
+geo
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
+prova2
+
+```geojson
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 1,
+      "properties": {
+        "ID": 0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+              [-90,35],
+              [-90,30],
+              [-85,30],
+              [-85,35],
+              [-90,35]
+          ]
+        ]
+      }
+    }
+  ]
+}
+```
+
+prova 3
+
+```topojson
+{
+  "type": "Topology",
+  "transform": {
+    "scale": [0.0005000500050005, 0.00010001000100010001],
+    "translate": [100, 0]
+  },
+  "objects": {
+    "example": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Point",
+          "properties": {"prop0": "value0"},
+          "coordinates": [4000, 5000]
+        },
+        {
+          "type": "LineString",
+          "properties": {"prop0": "value0", "prop1": 0},
+          "arcs": [0]
+        },
+        {
+          "type": "Polygon",
+          "properties": {"prop0": "value0",
+            "prop1": {"this": "that"}
+          },
+          "arcs": [[1]]
+        }
+      ]
+    }
+  },
+  "arcs": [[[4000, 0], [1999, 9999], [2000, -9999], [2000, 9999]],[[0, 0], [0, 9999], [2000, 0], [0, -9999], [-2000, 0]]]
+}
+```
+
+prova 4
+
+```stl
+solid cube_corner
+  facet normal 0.0 -1.0 0.0
+    outer loop
+      vertex 0.0 0.0 0.0
+      vertex 1.0 0.0 0.0
+      vertex 0.0 0.0 1.0
+    endloop
+  endfacet
+  facet normal 0.0 0.0 -1.0
+    outer loop
+      vertex 0.0 0.0 0.0
+      vertex 0.0 1.0 0.0
+      vertex 1.0 0.0 0.0
+    endloop
+  endfacet
+  facet normal -1.0 0.0 0.0
+    outer loop
+      vertex 0.0 0.0 0.0
+      vertex 0.0 0.0 1.0
+      vertex 0.0 1.0 0.0
+    endloop
+  endfacet
+  facet normal 0.577 0.577 0.577
+    outer loop
+      vertex 1.0 0.0 0.0
+      vertex 0.0 1.0 0.0
+      vertex 0.0 0.0 1.0
+    endloop
+  endfacet
+endsolid
+```

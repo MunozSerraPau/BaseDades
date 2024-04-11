@@ -45,5 +45,5 @@
 **Exercici 8**
 
 ```mysql
-    CREATE TABLE 
+
 ```
