@@ -147,9 +147,7 @@ DELIMITER ;
 
 ### **Exercici 7 - SubProgrames**
 
-Exercici 7 - Fes una consulta utilitzant la funció anterior perquè mostri mostri de cada
-empleat, el codi d’empleat, el nom, els anys treballats i la categoria professional a la que
-pertany.
+Exercici 7 - Fes una consulta utilitzant la funció anterior perquè mostri mostri de cada empleat, el codi d’empleat, el nom, els anys treballats i la categoria professional a la que pertany.
 
 ```mysql
 
@@ -157,8 +155,7 @@ pertany.
 
 ### **Exercici 8 - SubProgrames**
 
-Exercici 8 - Fes una funció anomenada spEdat, tal que donada una data per paràmetre
-ens retorni l'edat d'una persona. Les dates posteriors a la data d'avui han de retornar 0.
+Exercici 8 - Fes una funció anomenada spEdat, tal que donada una data per paràmetre ens retorni l'edat d'una persona. Les dates posteriors a la data d'avui han de retornar 0.
 
 ```mysql
 
@@ -174,8 +171,7 @@ Exercici 9 - Fes una funció que ens retorni el número de directors (caps) dife
 
 ### **Exercici 10 - SubProgrames**
 
-Exercici 10 - Quina instrucció utilitzarem si volem veure el contingut de la funció
-spPringat?
+Exercici 10 - Quina instrucció utilitzarem si volem veure el contingut de la funció spPringat?
 
 ```mysql
 
@@ -314,7 +310,10 @@ Fes un procediment que donat un codi d’empleat, ens doni la informació de l�
 Volem fer un registre dels usuaris que entren al nostre sistema. Per fer-ho primer caldrà crear una taula amb dos camps, un per guardar l’usuari i l’altre per guardar la data i hora de l’accés.
 
 ```mysql
-
+CREATE TABLE registre_usuaris (
+    usuari      VARCHAR(100),
+    acces      DATETIME
+);
 ```
 
 ### **Exercici 8 - Procediments**
@@ -322,7 +321,16 @@ Volem fer un registre dels usuaris que entren al nostre sistema. Per fer-ho prim
 A continuació feu un procediment sense arguments, de manera que cada vegada que el crideu, insereixi en aquesta taula l’usuari actual i la data i hora en que s’ha executat el procediment.
 
 ```mysql
+DROP PROCEDURE IF EXISTS spRegistrarUsuari;
+DELIMITER //
+CREATE PROCEDURE spRegistrarUsuari()
+BEGIN   
 
+    INSERT INTO registre_usuaris(usari,acces)
+        VALUES(CURRENT_USER(), NOW());
+
+END //
+CALL spRegistrarUsuari()//
 ```
 
 ### **Exercici 9 - Procediments**
@@ -338,7 +346,19 @@ Fes un procediment que ens permeti afegir un nou departament però amb la següe
 Fes un procediment que donat un codi d’empleat, ens posi en paràmetres de sortida el nom i el cognom. Indica com ho pots fer per comprovar si el procediment et funciona.
 
 ```mysql
-
+DROP PROCEDURE IF EXISTS spDadesEmpleat;
+DELIMITER //
+CREATE PROCEDURE spDadesEmpleat(IN pEmpleatId INT, OUT pEmpleatNom VARCHAR(20), OUT pEmpleatCognoms VARCHAR(25))
+BEGIN
+    SELECT nom, cognoms INTO pEmpleatNom,pEmpleatCognoms
+        FROM empleats
+    WHERE empleat_id = pEmpleatId
+END //
+DELIMITER ;
+SET @vNom = 'Pere';
+SET @vCognoms = 'Pi';
+SELECT @vNom, @vCognoms;
+CALL spDadesEmpleat(101, @vNom, @vCognoms)
 ```
 
 ### **Exercici 11 - Procediments**
@@ -346,7 +366,19 @@ Fes un procediment que donat un codi d’empleat, ens posi en paràmetres de sor
 Fes un procediment que ens permeti modificar el nom i cognom d’un empleat.
 
 ```mysql
+DROP PROCEDURE IF EXISTS spModificarEmpleat;
+DELIMITER //
+CREATE PROCEDURE spModificarEmpleat(IN pEmpleatId INT, IN pEmpleatNom VARCHAR(20), IN pEmpleatCognoms VARCHAR(25))
+BEGIN
 
+    IF pEmpleatNom IS NOT NULL AND pEmpleatCognoms IS NOT NULL THEN
+        UPDATE empleats
+            SET nom = pEmpleatNom,
+                cognoms = pEmpleatCognoms
+        WHERE empleat_id = pEmpleatId
+    END IF
+
+END //
 ```
 
 ### **Exercici 12 - Procediments**
@@ -366,14 +398,76 @@ Fes un procediment amb nom spRegistrarLog que rebrà com a paràmetres el nom de
 Aquest procediment només cal que insereixi un registre en la taula logs_usuaris amb les dades rebudes, tenint en compte l’usuari actual i la data-hora del sistema.
 
 ```mysql
+DROP TABLE IF EXISTS logs_usuaris
+CREATE TABLE logs_usuaris (
+    usuari      VARCHAR(100),
+    data        DATETIME,
+    taula       VARCHAR(50),
+    accio       VARCHAR(20),
+    valor_pk    VARCHAR(200)
+)
 
+DROP PROCEDURE IF EXISTS spRegistrarLog;
+DELIMITER //
+CREATE PROCEDURE spRegistrarLog(IN pTaula VARCHAR(50), IN pAccio VARCHAR(20), IN pValorPK VARCHAR(200))
+BEGIN
+
+    INSERT INTO logs_usuaris (usuari,data,taula,accio,valor_pk)
+        VALUES(CURRENT_USER(), NOW(), Ptaula, pAccio, pValorPK)
+
+END //
+DELIMITER ;
+CALL spRegistrarLog('empleats', 'INSERT', '500');
+SELECT * FROM logs_usuaris;
 ```
 
 ### **Exercici 13 - Procediments**
+
 Fes un procediment que ens permeti eliminar un departament determinat. El departament s’ha d’eliminar de la taula departaments. Utilitza a més dins d’aquest procediment, el procediment creat anteriorment (spRegistrarLog) per guardar també un registre del que ha realitzat l’usuari. Ens ha de quedar clar que l’usuari actual, en data X ha eliminat de la taula DEPARTAMENTS el codi departament Y.
 
 ```mysql
+DROP PROCEDURE IF EXISTS spEliminarDepartament;
+DELIMITER //
+CREATE PROCEDURE spEliminarDepartament(IN dDepId INT)
+BEGIN
 
+    DECLARE vDepID INT;
+    
+
+    IF (SELECT departamnet_id INTO vDepID
+                FROM departaments
+            WHERE departament_id = dDepId;) IS NOT NULL THEN
+        SELECT 'dins if';
+
+        -- Tenir en compte que no tingui "empleats"
+        DELETE FROM empleats
+            WHERE departament_id = pDepId;
+
+        IF ROW_COUNT() > 0 THEN
+            CALL spEliminarDepartament ('empleats', 'ELIMINAR', CONCAT("dep_id = ", dDepId));
+        END IF;
+
+
+        -- Tenir en compte que no tingui "historial_feines"
+        DELETE FROM departaments
+            WHERE departament_id = dDepId;
+
+        IF ROW_COUNT() > 0 THEN
+            CALL spEliminarDepartament ('departeaments', 'ELIMINAR', CONCAT("dep_id = ", dDepId));
+        END IF;
+
+
+        DELETE FROM departaments
+            WHERE departaments_id = dDepId
+
+        CALL spRegistrarLog('departamnets','ELIMINAR',dDepId)
+    ELSE 
+        SELECT 'dins else';
+
+    END IF;
+
+END //
+CALL spEliminarDepartament(300);
 ```
 
 ### **Exercici 14 - Procediments**
@@ -382,116 +476,4 @@ Fes un procediment que ens posi en paràmetres de sortida el número d’empleat
 
 ```mysql
 
-```
-
-prova2
-
-geo
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
-
-prova2
-
-```geojson
-{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "id": 1,
-      "properties": {
-        "ID": 0
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-              [-90,35],
-              [-90,30],
-              [-85,30],
-              [-85,35],
-              [-90,35]
-          ]
-        ]
-      }
-    }
-  ]
-}
-```
-
-prova 3
-
-```topojson
-{
-  "type": "Topology",
-  "transform": {
-    "scale": [0.0005000500050005, 0.00010001000100010001],
-    "translate": [100, 0]
-  },
-  "objects": {
-    "example": {
-      "type": "GeometryCollection",
-      "geometries": [
-        {
-          "type": "Point",
-          "properties": {"prop0": "value0"},
-          "coordinates": [4000, 5000]
-        },
-        {
-          "type": "LineString",
-          "properties": {"prop0": "value0", "prop1": 0},
-          "arcs": [0]
-        },
-        {
-          "type": "Polygon",
-          "properties": {"prop0": "value0",
-            "prop1": {"this": "that"}
-          },
-          "arcs": [[1]]
-        }
-      ]
-    }
-  },
-  "arcs": [[[4000, 0], [1999, 9999], [2000, -9999], [2000, 9999]],[[0, 0], [0, 9999], [2000, 0], [0, -9999], [-2000, 0]]]
-}
-```
-
-prova 4
-
-```stl
-solid cube_corner
-  facet normal 0.0 -1.0 0.0
-    outer loop
-      vertex 0.0 0.0 0.0
-      vertex 1.0 0.0 0.0
-      vertex 0.0 0.0 1.0
-    endloop
-  endfacet
-  facet normal 0.0 0.0 -1.0
-    outer loop
-      vertex 0.0 0.0 0.0
-      vertex 0.0 1.0 0.0
-      vertex 1.0 0.0 0.0
-    endloop
-  endfacet
-  facet normal -1.0 0.0 0.0
-    outer loop
-      vertex 0.0 0.0 0.0
-      vertex 0.0 0.0 1.0
-      vertex 0.0 1.0 0.0
-    endloop
-  endfacet
-  facet normal 0.577 0.577 0.577
-    outer loop
-      vertex 1.0 0.0 0.0
-      vertex 0.0 1.0 0.0
-      vertex 0.0 0.0 1.0
-    endloop
-  endfacet
-endsolid
 ```
