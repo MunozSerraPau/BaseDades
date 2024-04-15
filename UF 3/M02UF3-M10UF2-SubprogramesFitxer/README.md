@@ -338,7 +338,7 @@ CALL spRegistrarUsuari()//
 Fes un procediment que ens permeti afegir un nou departament però amb la següent particularitat: En cas que la localització no existeixi a la taula localitzacions, ens posarà un NULL en el camp id_localtizacio de la taula departaments. Al procediment li hem de passar el codi de departament, el nom del departament i el codi de la localització.
 
 ```mysql
-
+¡¡¡ S'HA DE FER !!!
 ```
 
 ### **Exercici 10 - Procediments**

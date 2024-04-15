@@ -69,7 +69,7 @@ DELIMITER ;
 CALL spRegistrarUsuari();
 
 
-/* EX 9*/
+/* EX 10*/
 DROP PROCEDURE IF EXISTS spDadesEmpleat;
 DELIMITER //
 CREATE PROCEDURE spDadesEmpleat(IN pEmpleatId INT, OUT pEmpleatNom VARCHAR(20), OUT pEmpleatCognoms VARCHAR(25))
@@ -84,7 +84,7 @@ SET @vCognoms = 'Pi';
 SELECT @vNom, @vCognoms;
 CALL spDadesEmpleat(101, @vNom, @vCognoms)
 
-/* ex 10 */
+/* ex 11 */
 DROP PROCEDURE IF EXISTS spModificarEmpleat;
 DELIMITER //
 CREATE PROCEDURE spModificarEmpleat(IN pEmpleatId INT, IN pEmpleatNom VARCHAR(20), IN pEmpleatCognoms VARCHAR(25))
