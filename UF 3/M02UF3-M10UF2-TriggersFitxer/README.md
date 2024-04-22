@@ -19,6 +19,7 @@ A quina taula o taules de la base de dades INFORMATION_SCHEMA de MySQL es poden 
 
 ```mysql
 
+
 ```
 
 ### **Exercici 3 (Part 1)**
@@ -38,7 +39,40 @@ Crea el que creguis necessari per auditar la taula d’empleats. Aquesta auditor
 Mitjançant triggers volem dur el control de dades d’entrada d’una taula. Concretament volem dur el control del camp salari de la taula empleats. Aquest salari ha de ser un valor dins del rang marcat pels camps salari_min i salari_max de la taula feines. En definitiva, volem controlar que el salari dels empleats estigui dins dels rangs de salaris marcats per el tipus de feina que fa l’empleat.
 
 ```mysql
+DELIMITER //
+DROP TRIGGER IF EXISTS trgSalariEmpleatsUpdate //
+CREATE TRIGGER trgSalariEmpleatsUpdate BEFORE UPDATE 
+    ON empleats FOR EACH ROW
+BEGIN
+    -- Comprova que el salari estigui per sota del salari minim o per sobre del salari maxim
+    IF((NEW.salari < (SELECT salari_min FROM feines WHERE feina_codi = NEW.feina_codi)) OR (NEW.salari > (SELECT salari_max FROM feines WHERE feina_codi = NEW.feina_codi))) THEN
+        -- OPCIO 1 (Li assigna el salri anterior a l'empleat)
+        SET NEW.salari = OLD.salari;
+        -- OPCIO 2 (Passar un text conforme dona error i no deixar-lo assignar)
+        SIGNAL SQLSTATE '43000'
+        SET MESSAGE_TEXT = "El salari introduït no compleix el rand fe salri de la geina_codi";
+    END IF;
+END //
 
+DROP TRIGGER IF EXISTS trgSalariEmpleatsInsert //
+CREATE TRIGGER trgSalariEmpleatsInsert BEFORE INSERT ON empleats FOR EACH ROW
+BEGIN
+    -- Comprova que el salari estigui per sota del salari minim o per sobre del salari maxim
+    IF((NEW.salari < (SELECT salari_min FROM feines WHERE feina_codi = NEW.feina_codi)) OR (NEW.salari > (SELECT salari_max FROM feines WHERE feina_codi = NEW.feina_codi))) THEN 
+        -- OPCIO 1 (Li assigna el salri minim a l'empleat)
+        SET NEW.salari = (SELECT salari_min FROM feines WHERE feina_codi = NEW.feina_codi);
+        -- OPCIO 2 (Passar un text conforme dona error i no deixar-lo assignar)
+        SIGNAL SQLSTATE '43000'
+        SET MESSAGE_TEXT = "El salari introduït no compleix el rand fe salri de la geina_codi";
+    END IF;
+END //
+DELIMITER ;
+
+
+INSERT INTO empleats(empleat_id, nom, cognoms, email, salari, feina_codi, data_contractacio)
+    VALUES(300, 'Pol', 'Roig', 'prog@empresa.cat', 2000, 'IT_PROG', NOW());
+    
+SELECT * FROM empleats;
 ```
 
 ### **Exercici 5 (Part 1)**
@@ -48,7 +82,7 @@ Mitjançant triggers volem dur el control de dades d’entrada d’una taula. Co
 Afegeix un el camp num_empleats a la taula departaments. Aquest camp simbolitza/modela el número d’empleats que té aquell departament. Implementa mitjançant triggers el manteniment d’aquest camp de manera automàtica. Per exemple si s’afegeix un nou empleat del departament amb codi 10 cal augmentar en 1 aquest camp del departament_id = 10
 
 ```mysql
-
+DELI
 ```
 
 1. Proccediment /funcio
@@ -60,7 +94,7 @@ Afegeix un el camp num_empleats a la taula departaments. Aquest camp simbolitza/
 
 **Manteniment de l’historial de feines.**
 
-Implementa el que creguis necessari per mantenir la taula historial_feines de forma automàtica. És dir, quan es s’afegeix o es modifica la feina d’un empleat, cal registrar aquest canvi a la taula historial_feines. 
+Implementa el que creguis necessari per mantenir la taula historial_feines de forma automàtica. És dir, quan es s’afegeix o es modifica la feina d’un empleat, cal registrar aquest canvi a la taula historial_feines.
 Cal tenir en compte que si l’empleat canvia de departament no cal registrar-ho a la taula historial_feines.
 La data_inici i data_fi han d’anar en consonància a les dates del canvi de feina.
 
@@ -89,7 +123,6 @@ COMERCIAL (nif, nom, dataNaix, telefon, email)
 
 FACTURA (numFactura, dataFactura, baseImponible, tipusIva, totalIva, totalFactura, formaPagament, observacions, comissió, dniClient, dniComercial, totalPagat, dataCobrament)
 
-
 ### **Exercici 1 (Part 2)**
 
 ```mysql
@@ -99,6 +132,7 @@ FACTURA (numFactura, dataFactura, baseImponible, tipusIva, totalIva, totalFactur
 ### **Exercici 2 (Part 2)**
 
 ```mysql
+fe
 
 ```
 
