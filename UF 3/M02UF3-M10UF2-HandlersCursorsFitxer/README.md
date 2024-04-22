@@ -1,48 +1,50 @@
-# ACTIVITAT - EXERCICIS HANDLERS I CURSORS
+# EXERCICIS Handlers i Cursors
 
-**Exercici 1**
+## ACTIVITAT - EXERCICIS HANDLERS I CURSORS
 
-```mysql
-
-```
-
-**Exercici 2**
+### **Exercici 1**
 
 ```mysql
 
 ```
 
-**Exercici 3**
+### **Exercici 2**
 
 ```mysql
 
 ```
 
-**Exercici 4**
+### **Exercici 3**
 
 ```mysql
 
 ```
 
-**Exercici 5**
+### **Exercici 4**
 
 ```mysql
 
 ```
 
-**Exercici 6**
+### **Exercici 5**
 
 ```mysql
 
 ```
 
-**Exercici 7**
+### **Exercici 6**
 
 ```mysql
 
 ```
 
-**Exercici 8**
+### **Exercici 7**
+
+```mysql
+
+```
+
+### **Exercici 8**
 
 ```mysql
 
